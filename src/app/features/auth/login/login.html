@@ -1,0 +1,38 @@
+<div class="auth-wrapper">
+  <div class="auth-card">
+    <div class="brand">TaskFlow</div>
+    <h2>Welcome Back</h2>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+
+      <div class="input-group">
+        <input
+          type="text"
+          formControlName="username"
+          placeholder="Username"
+        />
+      </div>
+
+      <div class="input-group">
+        <input
+          type="password"
+          formControlName="password"
+          placeholder="Password"
+        />
+      </div>
+
+      <button type="submit" [disabled]="form.invalid">
+        Login
+      </button>
+
+      <p class="error" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </p>
+    </form>
+
+    <div class="switch-link">
+      Don’t have an account?
+      <a routerLink="/register">Register</a>
+    </div>
+  </div>
+</div>

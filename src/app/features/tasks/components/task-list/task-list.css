@@ -1,0 +1,171 @@
+.page-title {
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+/* GRID */
+.task-grid {
+  display: grid;
+  gap: 1.2rem;
+}
+
+/* CARD */
+.task-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  transition: 0.2s ease;
+  gap: 1rem;
+}
+
+.task-card:hover {
+  transform: translateY(-4px);
+}
+
+.task-card.completed {
+  background: #f3f4f6;
+  opacity: 0.7;
+}
+
+/* CONTENT */
+.task-content {
+  flex: 1;
+}
+
+.task-content h3 {
+  margin: 0 0 0.4rem 0;
+  font-size: 1.1rem;
+}
+
+.task-content p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+/* ACTIONS */
+.task-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* BUTTON BASE */
+button {
+  padding: 0.45rem 0.9rem;
+  border-radius: 6px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.15s ease;
+  font-size: 0.85rem;
+}
+
+/* SUCCESS BUTTON */
+button.success {
+  background: #10b981;
+  color: white;
+}
+
+button.success:hover {
+  background: #059669;
+}
+
+/* EDIT BUTTON */
+button.edit {
+  background: #3b82f6;
+  color: white;
+}
+
+button.edit:hover {
+  background: #2563eb;
+}
+
+/* DELETE BUTTON */
+button.danger {
+  background: #ef4444;
+  color: white;
+}
+
+button.danger:hover {
+  background: #dc2626;
+}
+
+/* SECONDARY BUTTON (Cancel) */
+button.secondary {
+  background: #9ca3af;
+  color: white;
+}
+
+button.secondary:hover {
+  background: #6b7280;
+}
+
+/* EDIT MODE SECTION */
+.edit-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.edit-section input,
+.edit-section textarea {
+  padding: 0.6rem;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: 0.9rem;
+}
+
+.edit-section input:focus,
+.edit-section textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+/* EMPTY STATE */
+.empty {
+  text-align: center;
+  padding: 2rem;
+  color: #9ca3af;
+  font-size: 0.95rem;
+}
+
+.undo-popup {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #1f2937;
+  color: white;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  animation: fadeIn 0.2s ease;
+}
+
+.undo-popup button {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 0.3rem 0.7rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.undo-popup button:hover {
+  background: #2563eb;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+

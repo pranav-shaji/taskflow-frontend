@@ -1,0 +1,68 @@
+<app-task-form (taskCreated)="addTaskToList($event)"></app-task-form>
+
+<h1 class="page-title">Tasks</h1>
+
+<div *ngIf="tasks.length === 0" class="empty">
+  No tasks yet. Add one!
+</div>
+
+<div class="task-grid">
+  @for (task of tasks; track task.id) {
+
+    <div class="task-card" [class.completed]="task.isCompleted">
+
+      @if (editingTaskId === task.id) {
+
+        <!-- EDIT MODE -->
+        <div class="edit-section">
+          <input [(ngModel)]="editTitle" placeholder="Title" />
+          <textarea [(ngModel)]="editDescription" placeholder="Description"></textarea>
+
+          <div class="task-actions">
+            <button class="success" (click)="saveEdit(task)">
+              Save
+            </button>
+            <button class="secondary" (click)="cancelEdit()">
+              Cancel
+            </button>
+          </div>
+        </div>
+
+      } @else {
+
+        <!-- NORMAL VIEW MODE -->
+        <div class="task-content">
+          <h3>{{ task.title }}</h3>
+          <p>{{ task.description }}</p>
+        </div>
+
+        <div class="task-actions">
+          <button class="success"
+                  (click)="toggleComplete(task)">
+            {{ task.isCompleted ? 'Undo' : 'Complete' }}
+          </button>
+
+          <button class="edit"
+                  (click)="startEdit(task)">
+            Edit
+          </button>
+
+          <button class="danger"
+                  (click)="deleteTask(task.id)">
+            Delete
+          </button>
+        </div>
+
+      }
+
+    </div>
+  }
+</div>
+
+@if (recentlyDeletedTask) {
+  <div class="undo-popup">
+    Task deleted
+    <button (click)="undoDelete()">Undo</button>
+  </div>
+}
+
