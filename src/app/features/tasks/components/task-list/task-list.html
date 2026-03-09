@@ -1,4 +1,5 @@
 <app-task-form (taskCreated)="addTaskToList($event)"></app-task-form>
+<app-task-search (searchChanged)="filterTasks($event)"></app-task-search>
 
 <h1 class="page-title">Tasks</h1>
 
@@ -7,7 +8,8 @@
 </div>
 
 <div class="task-grid">
-  @for (task of tasks; track task.id) {
+
+  @for (task of filteredTasks; track task.id) {
 
     <div class="task-card" [class.completed]="task.isCompleted">
 
@@ -22,6 +24,7 @@
             <button class="success" (click)="saveEdit(task)">
               Save
             </button>
+
             <button class="secondary" (click)="cancelEdit()">
               Cancel
             </button>
@@ -32,11 +35,12 @@
 
         <!-- NORMAL VIEW MODE -->
         <div class="task-content">
-          <h3>{{ task.title }}</h3>
-          <p>{{ task.description }}</p>
+          <h3 [innerHTML]="highlightText(task.title)"></h3>
+          <p [innerHTML]="highlightText(task.description)"></p>
         </div>
 
         <div class="task-actions">
+
           <button class="success"
                   (click)="toggleComplete(task)">
             {{ task.isCompleted ? 'Undo' : 'Complete' }}
@@ -51,13 +55,61 @@
                   (click)="deleteTask(task.id)">
             Delete
           </button>
+
+          <button class="calendar-btn"
+                  (click)="addToCalendar(task.id)">
+            Add to Calendar
+          </button>
+
         </div>
 
       }
 
     </div>
+
   }
+
 </div>
+
+
+<!-- FILTER BAR (OUTSIDE LOOP) -->
+
+<div class="task-filter-bar">
+
+  <button
+    class="filter-btn"
+    [class.active]="activeFilter === 'all'"
+    (click)="filterBy('all')"
+  >
+    All
+  </button>
+
+  <button
+    class="filter-btn"
+    [class.active]="activeFilter === 'pending'"
+    (click)="filterBy('pending')"
+  >
+    Pending
+  </button>
+
+  <button
+    class="filter-btn"
+    [class.active]="activeFilter === 'completed'"
+    (click)="filterBy('completed')"
+  >
+    Completed
+  </button>
+
+  <button
+    class="filter-btn"
+    [class.active]="activeFilter === 'overdue'"
+    (click)="filterBy('overdue')"
+  >
+    Overdue
+  </button>
+
+</div>
+
 
 @if (recentlyDeletedTask) {
   <div class="undo-popup">
@@ -65,4 +117,3 @@
     <button (click)="undoDelete()">Undo</button>
   </div>
 }
-

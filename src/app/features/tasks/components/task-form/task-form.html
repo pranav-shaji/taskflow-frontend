@@ -1,5 +1,3 @@
-
-
 <div class="form-card">
   <h2>Add Task</h2>
 
@@ -14,11 +12,17 @@
       <textarea [(ngModel)]="description" name="description" required></textarea>
     </div>
 
+    <div class="form-group">
+      <label>Due Date</label>
+      <input 
+        type="datetime-local" 
+        [(ngModel)]="dueDate"
+        name="dueDate"
+      />
+    </div>
+
     <button type="submit" class="primary-btn">
       Add Task
     </button>
   </form>
 </div>
-
-<!-- 
-<button (click)="addTask()">Add Task</button> -->

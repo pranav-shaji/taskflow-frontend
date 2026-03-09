@@ -6,7 +6,7 @@ import { TaskListComponent } from '../../components/task-list/task-list';
   standalone: true,
   imports: [TaskListComponent],
   template: `
-    <h1>Focus on what matters. Delete the rest.</h1>
+    <h1>Focus on what matters..</h1>
     <app-task-list></app-task-list>
   `
 })

@@ -14,6 +14,7 @@ export class TaskFormComponent {
 
   title: string = '';
   description: string = '';
+  dueDate: string = '';
 
   @Output() taskCreated = new EventEmitter<Task>();
 
@@ -26,6 +27,9 @@ export class TaskFormComponent {
     const newTask = {
       title: this.title,
       description: this.description,
+      dueDate: this.dueDate 
+  ? new Date(this.dueDate).toISOString()
+  : undefined,
       isCompleted: false
     };
 
@@ -38,6 +42,7 @@ export class TaskFormComponent {
         // Clear form
         this.title = '';
         this.description = '';
+        this.dueDate = '';
       },
       error: (err) => {
         console.error('Create error:', err);

@@ -31,6 +31,14 @@ export class TaskService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
+  //add to calender
+  // add to calendar
+getCalendarUrl(taskId: number) {
+  return this.http.get(`${this.apiUrl}/${taskId}/calendar-url`);
+}
+
+  
 }
 
 

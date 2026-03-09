@@ -4,22 +4,29 @@ import { Task } from '../../models/task.model';
 import { TaskFormComponent } from '../task-form/task-form';
 import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
+import { TaskSearch } from '../task-search/task-search';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-task-list',
   standalone: true,
-  imports: [TaskFormComponent, FormsModule, NgIf],
+  imports: [TaskFormComponent, FormsModule, NgIf, TaskSearch],
   templateUrl: './task-list.html',
   styleUrl: './task-list.css',
 })
 export class TaskListComponent implements OnInit {
+  filteredTasks: Task[] = [];
   tasks: Task[] = [];
+  searchText: string = '';
   recentlyDeletedTask: Task | null = null;
   undoTimeout: any = null;
+  activeFilter: string = 'all';
 
   constructor(
     private taskService: TaskService,
     private cdr: ChangeDetectorRef,
+    private sanitizer: DomSanitizer
+
   ) {
     console.log('TaskList instance created:', Math.random());
   }
@@ -32,6 +39,7 @@ export class TaskListComponent implements OnInit {
     this.taskService.getAll().subscribe({
       next: (data) => {
         this.tasks = [...data].sort((a, b) => b.id - a.id);
+        this.filteredTasks = this.tasks;   // ✅ IMPORTANT 
 
         console.log('Tasks loaded into THIS instance:', this.tasks);
         this.cdr.detectChanges();
@@ -44,6 +52,7 @@ export class TaskListComponent implements OnInit {
 
   addTaskToList(task: Task): void {
     this.tasks = [task, ...this.tasks];
+    this.filteredTasks = this.tasks; 
     this.cdr.detectChanges();
   }
 
@@ -53,6 +62,7 @@ export class TaskListComponent implements OnInit {
 
     // Remove from UI immediately
     this.tasks = this.tasks.filter((t) => t.id !== id);
+    this.filteredTasks = this.tasks;
     this.recentlyDeletedTask = taskToDelete;
 
     this.cdr.detectChanges();
@@ -71,6 +81,53 @@ export class TaskListComponent implements OnInit {
       this.cdr.detectChanges();
     }, 5000);
   }
+
+  addToCalendar(taskId: number) {
+  this.taskService.getCalendarUrl(taskId).subscribe({
+    next: (res: any) => {
+      window.open(res.calendarUrl, '_blank');
+    },
+    error: (err) => {
+      alert(err.error?.message || 'Unable to open calendar');
+    }
+  });
+}
+
+
+
+
+filterTasks(searchText: string) {
+
+  this.searchText = searchText;
+
+  if (!searchText) {
+    this.filteredTasks = [...this.tasks];
+    return;
+  }
+
+  const text = searchText.toLowerCase();
+
+  this.filteredTasks = this.tasks
+    .filter(task =>
+      task.title.toLowerCase().includes(text) ||
+      task.description.toLowerCase().includes(text)
+    )
+    .map(task => ({ ...task }));   // force Angular refresh
+}
+
+
+highlightText(text: string): SafeHtml {
+
+  if (!this.searchText) return text;
+
+  const escaped = this.searchText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+  const regex = new RegExp(`(${escaped})`, 'gi');
+
+  const highlighted = text.replace(regex, `<span class="highlight">$1</span>`);
+
+  return this.sanitizer.bypassSecurityTrustHtml(highlighted);
+}
 
   toggleComplete(task: Task): void {
     const updatedTask = {
@@ -91,6 +148,50 @@ export class TaskListComponent implements OnInit {
       },
     });
   }
+
+  filterBy(type: string) {
+
+  this.activeFilter = type;
+
+  let tempTasks = [...this.tasks];
+
+  // Apply search first
+  if (this.searchText) {
+    const text = this.searchText.toLowerCase();
+
+    tempTasks = tempTasks.filter(t =>
+      t.title.toLowerCase().includes(text) ||
+      t.description.toLowerCase().includes(text)
+    );
+  }
+
+  const now = new Date();
+
+  // Apply filter
+  switch (type) {
+
+    case 'pending':
+      tempTasks = tempTasks.filter(t => !t.isCompleted);
+      break;
+
+    case 'completed':
+      tempTasks = tempTasks.filter(t => t.isCompleted);
+      break;
+
+    case 'overdue':
+      tempTasks = tempTasks.filter(t =>
+        t.dueDate &&
+        new Date(t.dueDate) < now &&
+        !t.isCompleted
+      );
+      break;
+  }
+
+  this.filteredTasks = tempTasks;
+}
+
+
+
 
   //edit method
   editingTaskId: number | null = null;
